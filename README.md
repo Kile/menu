@@ -1,2 +1,2 @@
 # menu
-A basic menu to set up, free customziable
+A basic menu to set up, freely customisable
