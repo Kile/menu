@@ -1,7 +1,7 @@
 const Commands = new discord.command.CommandGroup();
-var MSGID = '';
-var AUTHORID = '';
-var guildId = 'GUILD ID';
+let MSGID = '';
+let AUTHORID = '';
+const embedColor = 0x3f888f;
 
 Commands.raw(
   {
@@ -10,11 +10,10 @@ Commands.raw(
     description: 'Displays help options'
   },
   async (msg) => {
-    const menu = new discord.Embed();
-    await menu.setColor(0x3f888f);
-    await menu.setTitle('Help menu');
-    await menu.setDescription(
-      `What do you need help with?
+    await msg.reply(new discord.Embed({
+      color: embedColor,
+      title: 'Help menu',
+      description: `What do you need help with?
 
 1️⃣: Commands
 
@@ -23,27 +22,26 @@ Commands.raw(
 3️⃣: How to get a mod
 
 4️⃣: How to get special ranks`
-    );
-
-    const thehelpmsg = await msg.reply(menu);
-
-    await thehelpmsg.addReaction('1️⃣');
-    await thehelpmsg.addReaction('2️⃣');
-    await thehelpmsg.addReaction('3️⃣');
-    await thehelpmsg.addReaction('4️⃣');
-    await thehelpmsg.addReaction('❌');
-
-    MSGID = thehelpmsg.id;
-    AUTHORID = msg.author.id;
+    })).then(async (m) => {
+      await m.addReaction('1️⃣');
+      await m.addReaction('2️⃣');
+      await m.addReaction('3️⃣');
+      await m.addReaction('4️⃣');
+      await m.addReaction('❌');
+      
+      
+      MSGID = m.id;
+      AUTHORID = msg.author.id;
+    });
   }
 );
 
 discord.registerEventHandler('MESSAGE_REACTION_ADD', async (theReaction) => {
-  const guild = await discord.getGuild(guildId);
-  const theMsgChannel = await discord.getGuildTextChannel(
+  const guild = await discord.getGuild();
+
+  const theMsg = await (await discord.getGuildTextChannel(
     theReaction.channelId
-  );
-  const theMsg = await theMsgChannel.getMessage(theReaction.messageId);
+  )).getMessage(theReaction.messageId);
 
   if (
     theReaction.emoji.name == '1️⃣' &&
